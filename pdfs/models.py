@@ -12,5 +12,10 @@ class PDF(models.Model):
     class Meta:
         ordering = ['-uploaded_at']
     
+    def save(self, *args, **kwargs):
+        if self.file:
+            self.file_size = self.file.size
+        super().save(*args, **kwargs)
+    
     def __str__(self):
         return self.title

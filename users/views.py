@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from .models import User
 
 def signup_view(request):
@@ -9,14 +11,21 @@ def signup_view(request):
         return redirect('dashboard')
     
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
         password = request.POST.get('password')
         password2 = request.POST.get('password2')
-        role = request.POST.get('role', 'student')
         
         if password != password2:
             messages.error(request, 'Passwords do not match!')
+            return render(request, 'users/signup.html')
+        
+        # Validate password strength
+        try:
+            validate_password(password)
+        except ValidationError as e:
+            for error in e.messages:
+                messages.error(request, error)
             return render(request, 'users/signup.html')
         
         if User.objects.filter(username=username).exists():
@@ -27,9 +36,11 @@ def signup_view(request):
             messages.error(request, 'Email already exists!')
             return render(request, 'users/signup.html')
         
-        user = User.objects.create_user(username=username, email=email, password=password, role=role)
-        messages.success(request, 'Account created successfully! Please login.')
-        return redirect('signin')
+        # Always create users as 'student' - admin role must be assigned through Django admin
+        user = User.objects.create_user(username=username, email=email, password=password, role='student')
+        login(request, user)
+        messages.success(request, 'Account created successfully!')
+        return redirect('dashboard')
     
     return render(request, 'users/signup.html')
 
@@ -43,9 +54,12 @@ def signin_view(request):
         
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            login(request, user)
-            messages.success(request, f'Welcome back, {user.username}!')
-            return redirect('dashboard')
+            if user.is_active:
+                login(request, user)
+                messages.success(request, f'Welcome back, {user.username}!')
+                return redirect('dashboard')
+            else:
+                messages.error(request, 'Your account is inactive!')
         else:
             messages.error(request, 'Invalid username or password!')
     

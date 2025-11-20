@@ -103,10 +103,12 @@ pdf/
 
 ## Security Features
 
-- Password hashing with bcrypt
+- Password hashing with Django's default PBKDF2 algorithm
+- Password strength validation
 - CSRF protection
-- Role-based access control
-- Secure file upload validation
+- Role-based access control (admin role assigned only through Django admin)
+- Secure file upload validation (file type and size checks)
+- Environment-based configuration for sensitive settings
 - Session management
 
 ## Contributing
