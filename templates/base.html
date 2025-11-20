@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PDF Management System{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h2>📚 PDF Manager</h2>
+            </div>
+            <div class="nav-links">
+                {% if user.is_authenticated %}
+                    <span class="nav-user">Welcome, {{ user.username }} ({{ user.role }})</span>
+                    <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+                    <a href="{% url 'signout' %}" class="nav-link btn-signout">Sign Out</a>
+                {% else %}
+                    <a href="{% url 'signin' %}" class="nav-link">Sign In</a>
+                    <a href="{% url 'signup' %}" class="nav-link btn-signup">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="message {{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 PDF Management System. All rights reserved.</p>
+    </footer>
+</body>
+</html>

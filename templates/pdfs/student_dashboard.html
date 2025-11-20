@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard - PDF Management System{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Student Dashboard</h1>
+        <p>Upload and download PDF files</p>
+    </div>
+
+    <div class="upload-section">
+        <h2>Upload New PDF</h2>
+        <form method="POST" action="{% url 'upload_pdf' %}" enctype="multipart/form-data" class="upload-form">
+            {% csrf_token %}
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="file">PDF File</label>
+                    <input type="file" id="file" name="file" accept=".pdf" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description (optional)</label>
+                <textarea id="description" name="description" rows="3"></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Upload PDF</button>
+        </form>
+    </div>
+
+    <div class="pdfs-section">
+        <h2>Available PDFs</h2>
+        
+        {% if pdfs %}
+        <div class="pdfs-grid">
+            {% for pdf in pdfs %}
+            <div class="pdf-card">
+                <div class="pdf-icon">📄</div>
+                <h3>{{ pdf.title }}</h3>
+                <p class="pdf-meta">
+                    Uploaded by: {{ pdf.uploaded_by.username }}<br>
+                    Size: {{ pdf.file_size|filesizeformat }}<br>
+                    Date: {{ pdf.uploaded_at|date:"M d, Y" }}
+                </p>
+                {% if pdf.description %}
+                <p class="pdf-description">{{ pdf.description }}</p>
+                {% endif %}
+                <div class="pdf-actions">
+                    <a href="{% url 'download_pdf' pdf.id %}" class="btn btn-download">Download</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="no-pdfs">No PDFs available yet. Upload your first PDF!</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
