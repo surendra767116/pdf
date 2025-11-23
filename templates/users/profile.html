@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - PDF Management System{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Profile Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="display-4 fw-bold">
+                    <i class="bi bi-person-circle text-primary me-2"></i>My Profile
+                </h1>
+                <a href="{% url 'edit_profile' %}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-pencil-square me-2"></i>Edit Profile
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Left Column - Profile Info -->
+        <div class="col-lg-4 mb-4">
+            <!-- Profile Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body text-center p-4">
+                    {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center mb-3" style="width: 150px; height: 150px;">
+                            <i class="bi bi-person-fill text-white" style="font-size: 4rem;"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <h3 class="fw-bold mb-1">{{ user.username }}</h3>
+                    {% if profile.full_name %}
+                        <p class="text-muted mb-2">{{ profile.full_name }}</p>
+                    {% endif %}
+                    <span class="badge bg-success fs-6">{{ user.role|title }}</span>
+                    
+                    {% if profile.bio %}
+                        <hr class="my-3">
+                        <p class="text-muted small">{{ profile.bio }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Statistics Card -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>My Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                        <div>
+                            <i class="bi bi-file-earmark-pdf text-danger fs-3"></i>
+                            <span class="ms-2">Total PDFs</span>
+                        </div>
+                        <h4 class="mb-0 text-primary">{{ total_pdfs }}</h4>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-hdd text-info fs-3"></i>
+                            <span class="ms-2">Total Size</span>
+                        </div>
+                        <h4 class="mb-0 text-primary">{{ total_size|filesizeformat }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column - Details and Activity -->
+        <div class="col-lg-8">
+            <!-- Personal Information -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-person-vcard me-2"></i>Personal Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">Username</label>
+                            <p class="mb-0 fw-bold"><i class="bi bi-person me-2"></i>{{ user.username }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">Email</label>
+                            <p class="mb-0 fw-bold"><i class="bi bi-envelope me-2"></i>{{ user.email|default:"Not provided" }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">Phone</label>
+                            <p class="mb-0 fw-bold"><i class="bi bi-telephone me-2"></i>{{ profile.phone|default:"Not provided" }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">Student ID</label>
+                            <p class="mb-0 fw-bold"><i class="bi bi-card-text me-2"></i>{{ profile.student_id|default:"Not provided" }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">Department</label>
+                            <p class="mb-0 fw-bold"><i class="bi bi-building me-2"></i>{{ profile.department|default:"Not provided" }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">Year of Study</label>
+                            <p class="mb-0 fw-bold"><i class="bi bi-calendar-check me-2"></i>{{ profile.year_of_study|default:"Not provided" }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">Date of Birth</label>
+                            <p class="mb-0 fw-bold"><i class="bi bi-cake me-2"></i>{{ profile.date_of_birth|date:"M d, Y"|default:"Not provided" }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">Member Since</label>
+                            <p class="mb-0 fw-bold"><i class="bi bi-clock-history me-2"></i>{{ user.date_joined|date:"M d, Y" }}</p>
+                        </div>
+                        {% if profile.address %}
+                        <div class="col-12 mb-3">
+                            <label class="text-muted small">Address</label>
+                            <p class="mb-0 fw-bold"><i class="bi bi-geo-alt me-2"></i>{{ profile.address }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Recent PDFs</h5>
+                </div>
+                <div class="card-body">
+                    {% if user_pdfs %}
+                        <div class="list-group list-group-flush">
+                            {% for pdf in user_pdfs %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-file-earmark-pdf-fill text-danger me-2"></i>
+                                    <strong>{{ pdf.title }}</strong>
+                                    <br>
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar3 me-1"></i>{{ pdf.uploaded_at|date:"M d, Y" }}
+                                        <i class="bi bi-hdd ms-2 me-1"></i>{{ pdf.file_size|filesizeformat }}
+                                    </small>
+                                </div>
+                                <a href="{% url 'download_pdf' pdf.id %}" class="btn btn-sm btn-success">
+                                    <i class="bi bi-download"></i>
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% if total_pdfs > 5 %}
+                        <div class="text-center mt-3">
+                            <a href="{% url 'student_dashboard' %}" class="btn btn-outline-primary">
+                                View All PDFs <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                            <p class="text-muted mt-2">No PDFs uploaded yet</p>
+                            <a href="{% url 'student_dashboard' %}" class="btn btn-primary">
+                                <i class="bi bi-cloud-upload me-2"></i>Upload Your First PDF
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

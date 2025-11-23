@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+{% block title %}PDF Manager — Modern Document Workspace{% endblock %}
+
+{% block content %}
+<section class="hero-section text-white">
+    <div class="container py-5">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <span class="hero-badge">All-new release · 2025</span>
+                <h1 class="display-4 fw-bold mt-3">Deliver campus-grade PDF experiences that feel like SaaS.</h1>
+                <p class="lead text-light mt-3">PDF Manager centralizes academic content, approvals, and analytics in a sleek, responsive workspace that your students will actually enjoy using.</p>
+                <div class="d-flex flex-wrap gap-3 mt-4 hero-cta">
+                    <a href="{% url 'signup' %}" class="btn btn-light btn-lg shadow-sm">
+                        <i class="bi bi-rocket-takeoff me-2"></i>Launch Workspace
+                    </a>
+                    <a href="#features" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-eye me-2"></i>Explore Platform
+                    </a>
+                </div>
+                <div class="d-flex flex-wrap gap-4 mt-5 hero-metrics">
+                    <div class="stat-pill">
+                        <h3 class="mb-0">{{ stats.pdf_count|default:"0" }}+</h3>
+                        <p class="mb-0 text-white-50">Curated PDFs</p>
+                    </div>
+                    <div class="stat-pill">
+                        <h3 class="mb-0">{{ stats.student_count|default:"0" }}+</h3>
+                        <p class="mb-0 text-white-50">Learners onboarded</p>
+                    </div>
+                    <div class="stat-pill">
+                        <h3 class="mb-0">{{ stats.uptime }}</h3>
+                        <p class="mb-0 text-white-50">Platform uptime</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="floating-card shadow-lg">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <p class="text-uppercase small text-muted mb-0">Real-time overview</p>
+                                <h4 class="fw-bold mb-0">Content health</h4>
+                            </div>
+                            <span class="badge bg-success">Live</span>
+                        </div>
+                        <ul class="list-unstyled mb-4">
+                            <li class="d-flex align-items-center mb-3">
+                                <i class="bi bi-patch-check-fill text-success fs-4 me-3"></i>
+                                <div>
+                                    <p class="mb-0 fw-semibold">Automated validation</p>
+                                    <small class="text-muted">File type, size, and metadata checks</small>
+                                </div>
+                            </li>
+                            <li class="d-flex align-items-center mb-3">
+                                <i class="bi bi-stars text-warning fs-4 me-3"></i>
+                                <div>
+                                    <p class="mb-0 fw-semibold">Delightful reading UX</p>
+                                    <small class="text-muted">Responsive cards, smart filters, instant downloads</small>
+                                </div>
+                            </li>
+                            <li class="d-flex align-items-center">
+                                <i class="bi bi-people text-primary fs-4 me-3"></i>
+                                <div>
+                                    <p class="mb-0 fw-semibold">Team-ready workflows</p>
+                                    <small class="text-muted">Students, mentors, and admins collaborate securely</small>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <p class="text-muted small mb-0">Next deployment window</p>
+                                <h5 class="fw-bold mb-0">Tonight · 21:30 IST</h5>
+                            </div>
+                            <a href="{% url 'signin' %}" class="btn btn-primary btn-lg">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="brand-strip py-4 bg-white">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-center align-items-center gap-4 text-muted">
+            <span class="brand-pill">Trusted by academic accelerators</span>
+            <span class="brand-pill">Design-first dashboards</span>
+            <span class="brand-pill">Security-reviewed workflows</span>
+        </div>
+    </div>
+</section>
+
+<section id="features" class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-label">Platform DNA</span>
+            <h2 class="fw-bold">Professional-grade experience out of the box.</h2>
+            <p class="text-muted">Every interaction is thoughtfully designed to mirror the polish of modern SaaS tools.</p>
+        </div>
+        <div class="row g-4">
+            {% for feature in feature_cards %}
+            <div class="col-md-4">
+                <div class="feature-card h-100">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="icon-circle">
+                            <i class="bi {{ feature.icon }} fs-4"></i>
+                        </div>
+                        <span class="feature-chip">{{ feature.chip }}</span>
+                    </div>
+                    <h4 class="fw-bold">{{ feature.title }}</h4>
+                    <p class="text-muted">{{ feature.text }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section-padding bg-white">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-5">
+                <span class="section-label">Playbook</span>
+                <h2 class="fw-bold">From sign-up to adoption in three focused steps.</h2>
+                <p class="text-muted">Bring clarity to your document ops with a structured onboarding flow that teams can follow without training.</p>
+            </div>
+            <div class="col-lg-7">
+                <div class="timeline">
+                    {% for item in timeline_steps %}
+                    <div class="timeline-item">
+                        <div class="timeline-step">{{ item.step }}</div>
+                        <div>
+                            <h5 class="fw-bold mb-1">{{ item.title }}</h5>
+                            <p class="text-muted mb-0">{{ item.text }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-label">Customer love</span>
+            <h2 class="fw-bold">Designed with program directors and student teams.</h2>
+        </div>
+        <div class="row g-4">
+            {% for quote in testimonials %}
+            <div class="col-md-6">
+                <div class="testimonial-card h-100">
+                    <i class="bi bi-quote text-primary fs-1"></i>
+                    <p class="fs-5">{{ quote.quote }}</p>
+                    <div class="mt-4">
+                        <h6 class="mb-0">{{ quote.author }}</h6>
+                        <small class="text-muted">{{ quote.role }}</small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section-padding text-white final-cta">
+    <div class="container text-center">
+        <span class="hero-badge">Ready when you are</span>
+        <h2 class="display-5 fw-bold mt-3">Ship a beautiful PDF portal in under 10 minutes.</h2>
+        <p class="lead text-white-50 mb-4">Secure hosting, polished UI, and admin controls included. No plugins, no guesswork.</p>
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a href="{% url 'signup' %}" class="btn btn-light btn-lg">
+                <i class="bi bi-lightning-charge me-2"></i>Create free workspace
+            </a>
+            <a href="{% url 'signin' %}" class="btn btn-outline-light btn-lg">
+                <i class="bi bi-person-check me-2"></i>I'm already onboard
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
