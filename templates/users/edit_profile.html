@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile - PDF Management System{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="display-4 fw-bold">
+                    <i class="bi bi-pencil-square text-primary me-2"></i>Edit Profile
+                </h1>
+                <a href="{% url 'profile' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Profile
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-person-gear me-2"></i>Update Your Information</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Profile Picture -->
+                        <div class="text-center mb-4">
+                            {% if profile.profile_picture %}
+                                <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+                            {% else %}
+                                <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center mb-3" style="width: 120px; height: 120px;">
+                                    <i class="bi bi-person-fill text-white" style="font-size: 3rem;"></i>
+                                </div>
+                            {% endif %}
+                            <div>
+                                <label for="profile_picture" class="form-label fw-bold">
+                                    <i class="bi bi-camera me-1"></i>Profile Picture
+                                </label>
+                                <input type="file" class="form-control" id="profile_picture" name="profile_picture" accept="image/*">
+                                <small class="text-muted">Recommended: Square image, at least 200x200px</small>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Basic Information -->
+                        <h5 class="mb-3"><i class="bi bi-info-circle me-2"></i>Basic Information</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="first_name" class="form-label fw-bold">
+                                    <i class="bi bi-person me-1"></i>First Name
+                                </label>
+                                <input type="text" class="form-control form-control-lg" id="first_name" name="first_name" value="{{ user.first_name }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="last_name" class="form-label fw-bold">
+                                    <i class="bi bi-person me-1"></i>Last Name
+                                </label>
+                                <input type="text" class="form-control form-control-lg" id="last_name" name="last_name" value="{{ user.last_name }}">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="full_name" class="form-label fw-bold">
+                                <i class="bi bi-person-vcard me-1"></i>Full Name
+                            </label>
+                            <input type="text" class="form-control form-control-lg" id="full_name" name="full_name" value="{{ profile.full_name }}" placeholder="Your complete name">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label fw-bold">
+                                <i class="bi bi-envelope me-1"></i>Email
+                            </label>
+                            <input type="email" class="form-control form-control-lg" id="email" name="email" value="{{ user.email }}" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label fw-bold">
+                                    <i class="bi bi-telephone me-1"></i>Phone Number
+                                </label>
+                                <input type="tel" class="form-control form-control-lg" id="phone" name="phone" value="{{ profile.phone }}" placeholder="+1 234 567 8900">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="date_of_birth" class="form-label fw-bold">
+                                    <i class="bi bi-cake me-1"></i>Date of Birth
+                                </label>
+                                <input type="date" class="form-control form-control-lg" id="date_of_birth" name="date_of_birth" value="{{ profile.date_of_birth|date:'Y-m-d' }}">
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Academic Information -->
+                        <h5 class="mb-3"><i class="bi bi-mortarboard me-2"></i>Academic Information</h5>
+
+                        <div class="mb-3">
+                            <label for="student_id" class="form-label fw-bold">
+                                <i class="bi bi-card-text me-1"></i>Student ID
+                            </label>
+                            <input type="text" class="form-control form-control-lg" id="student_id" name="student_id" value="{{ profile.student_id }}" placeholder="e.g., STU2024001">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="department" class="form-label fw-bold">
+                                    <i class="bi bi-building me-1"></i>Department
+                                </label>
+                                <input type="text" class="form-control form-control-lg" id="department" name="department" value="{{ profile.department }}" placeholder="e.g., Computer Science">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="year_of_study" class="form-label fw-bold">
+                                    <i class="bi bi-calendar-check me-1"></i>Year of Study
+                                </label>
+                                <select class="form-select form-select-lg" id="year_of_study" name="year_of_study">
+                                    <option value="">Select Year</option>
+                                    <option value="1st Year" {% if profile.year_of_study == "1st Year" %}selected{% endif %}>1st Year</option>
+                                    <option value="2nd Year" {% if profile.year_of_study == "2nd Year" %}selected{% endif %}>2nd Year</option>
+                                    <option value="3rd Year" {% if profile.year_of_study == "3rd Year" %}selected{% endif %}>3rd Year</option>
+                                    <option value="4th Year" {% if profile.year_of_study == "4th Year" %}selected{% endif %}>4th Year</option>
+                                    <option value="Graduate" {% if profile.year_of_study == "Graduate" %}selected{% endif %}>Graduate</option>
+                                    <option value="Postgraduate" {% if profile.year_of_study == "Postgraduate" %}selected{% endif %}>Postgraduate</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Additional Information -->
+                        <h5 class="mb-3"><i class="bi bi-card-list me-2"></i>Additional Information</h5>
+
+                        <div class="mb-3">
+                            <label for="bio" class="form-label fw-bold">
+                                <i class="bi bi-chat-left-text me-1"></i>Bio
+                            </label>
+                            <textarea class="form-control" id="bio" name="bio" rows="3" placeholder="Tell us about yourself...">{{ profile.bio }}</textarea>
+                            <small class="text-muted">A brief description about you (optional)</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="address" class="form-label fw-bold">
+                                <i class="bi bi-geo-alt me-1"></i>Address
+                            </label>
+                            <textarea class="form-control" id="address" name="address" rows="2" placeholder="Your address...">{{ profile.address }}</textarea>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Submit Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'profile' %}" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-x-circle me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle me-2"></i>Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

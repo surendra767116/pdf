@@ -9,7 +9,35 @@ import os
 @login_required
 def student_dashboard_view(request):
     pdfs = PDF.objects.select_related('uploaded_by').all()
-    return render(request, 'pdfs/student_dashboard.html', {'pdfs': pdfs})
+    
+    # Get profile completion status for students
+    profile_completion = None
+    if request.user.role == 'student':
+        try:
+            from users.models import StudentProfile
+            profile = StudentProfile.objects.get(user=request.user)
+            
+            # Calculate profile completion percentage
+            fields = [
+                profile.full_name,
+                profile.phone,
+                profile.student_id,
+                profile.department,
+                profile.year_of_study,
+                profile.bio,
+                profile.date_of_birth,
+                profile.profile_picture,
+            ]
+            completed_fields = sum(1 for field in fields if field)
+            profile_completion = int((completed_fields / len(fields)) * 100)
+        except:
+            profile_completion = 0
+    
+    context = {
+        'pdfs': pdfs,
+        'profile_completion': profile_completion,
+    }
+    return render(request, 'pdfs/student_dashboard.html', context)
 
 @login_required
 def admin_dashboard_view(request):
